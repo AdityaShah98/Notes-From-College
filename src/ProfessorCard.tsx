@@ -17,6 +17,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import LinkIcon from '@mui/icons-material/Link';
+import CheckIcon from '@mui/icons-material/Check';
+
+import { useNavigate } from 'react-router-dom';
 
 type ProfessorCardProps = {
   professor: Professor;
@@ -30,17 +33,31 @@ type ProfessorCardModalProps = {
 };
 
 function ProfessorCardModal(props: ProfessorCardModalProps){
-  const copyLink = () => {
+  const [copied, setCopied] = React.useState(false);
 
+  React.useEffect(() => {
+    return () => {
+      setCopied(false);
+    }
+  }, [setCopied])
+
+  const closeModal = () => {
+    props.closeModal();
+    setCopied(false);
+  }
+
+  const copyLink = (event: any) => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
   };
 
   return(
-    <Dialog open={props.open} scroll="paper" onClose={props.closeModal} onBackdropClick={props.closeModal}>
+    <Dialog open={props.open} scroll="paper" onClose={closeModal} onBackdropClick={closeModal}>
       <DialogTitle>
         {props.professor.name}
         <IconButton
           aria-label="close"
-          onClick={props.closeModal}
+          onClick={closeModal}
           sx={{
             position: 'absolute',
             right: 8,
@@ -69,8 +86,7 @@ function ProfessorCardModal(props: ProfessorCardModalProps){
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.closeModal}>Copy Link <LinkIcon /></Button>
-        <Button onClick={props.closeModal}>Close</Button>
+        <Button onClick={copyLink} disabled={copied} startIcon={copied ? <CheckIcon /> : <LinkIcon />}>{copied ? "Copied" : "Copy Link"}</Button>
       </DialogActions>
     </Dialog>
   );
@@ -79,6 +95,7 @@ function ProfessorCardModal(props: ProfessorCardModalProps){
 function ProfessorCard(props: ProfessorCardProps){
 
   const [open, setOpen] = React.useState(props.open);
+  let navigate = useNavigate();
 
   const openDialog = () => {
     window.history.pushState(null, props.professor.name, "/professors/" + props.professor.route);
@@ -86,7 +103,7 @@ function ProfessorCard(props: ProfessorCardProps){
   };
 
   const closeDialog = React.useCallback(() => {
-    window.history.pushState(null, "Notes from College", "/professors");
+    navigate("../professors", {replace: true})
     setOpen(false);
   },
   [setOpen]);
@@ -117,6 +134,7 @@ function ProfessorCard(props: ProfessorCardProps){
             <Button size="small">Share</Button>
           </CardActions> */}
         </Card>
+        {/* {open ? <ProfessorCardModal professor={props.professor} open={true} closeModal={closeDialog} /> : null} */}
         <ProfessorCardModal professor={props.professor} open={open} closeModal={closeDialog} />
     </div>
   );

@@ -16,12 +16,12 @@ import stacy from './img/Dr_Stacy_L_Smith.png';
 import rena from './img/Rena_Ronson.png';
 import shabnam from './img/Shabnam_Mogharadi.png';
 import shilla from './img/Shilla_Kim-Parker.png';
+import Typography from '@mui/material/Typography';
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 type CardGridProps = {
     searchQuery: string;
-    routedProfessor?: string;
 };
 
 export type Professor = {
@@ -49,6 +49,8 @@ const professors: Professor[] = [
 
 
 function CardGrid(props: CardGridProps) {
+    let params = useParams();
+    
     var filteredProfessors = professors.filter(function(professor){
         return professor.name
         .toLowerCase()
@@ -59,14 +61,24 @@ function CardGrid(props: CardGridProps) {
             .replace(/\s/g,'')
         )
     });
-    //TODO: if filteredProfessors.length render grid, else render "no professor match" modal
+    //TODO: if filteredProfessors.length render grid, else render "no professor match" snippet
     return(
-      <Container sx={{ py: 4 }} maxWidth="md">
+      <Container sx={{ py: 6 }} maxWidth="md">
+        {props.searchQuery ?
+            <Typography
+            variant="body1"
+            // align="left"
+            color="text.secondary"
+            gutterBottom
+            >
+            Showing Search Results for "{props.searchQuery}":
+            </Typography> 
+        : null}
         <Grid container spacing={4}>
           {filteredProfessors.map((professor) => (
             <Grid item xs={6} sm={4} md={4} key={professor.route}>
                 {/* <Link to={'/professors/'+professor.route} style={{ textDecoration: 'none' }}> */}
-                    <ProfessorCard professor={professor} open={professor.route == props.routedProfessor}/>
+                    <ProfessorCard professor={professor} open={professor.route == params.professorId}/>
                 {/* </Link> */}
             </Grid>
           ))}
