@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -21,6 +22,8 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import { useNavigate } from 'react-router-dom';
 
+import * as ReactGA from 'react-ga';
+
 type ProfessorCardProps = {
   professor: Professor;
   open: boolean;
@@ -31,6 +34,15 @@ type ProfessorCardModalProps = {
   open: boolean;  
   closeModal: any;
 };
+
+const Info = styled(DialogContentText)(({ theme }) => ({
+  height:'100%',
+  paddingRight:'10px',
+  [theme.breakpoints.up('sm')]: {
+    overflowY: 'scroll',
+  },
+  whiteSpace: 'pre-line'
+}));
 
 function ProfessorCardModal(props: ProfessorCardModalProps){
   const [copied, setCopied] = React.useState(false);
@@ -74,13 +86,9 @@ function ProfessorCardModal(props: ProfessorCardModalProps){
           </Grid>
           <Grid item xs={12} sm={6}>
             <div style={{height: "300px", background: '#FFFFFF'}}>
-              <DialogContentText variant="body1" style=
-                {{height:'100%',
-                paddingRight:'10px',
-                overflowY: 'scroll',
-                whiteSpace: 'pre-line'}}>
+              <Info variant="body1">
                 {props.professor.description}
-              </DialogContentText>
+              </Info>
             </div>
           </Grid>
         </Grid>
@@ -99,6 +107,7 @@ function ProfessorCard(props: ProfessorCardProps){
 
   const openDialog = () => {
     window.history.pushState(null, props.professor.name, "/professors/" + props.professor.route);
+    ReactGA.pageview(window.location.pathname);
     setOpen(true);
   };
 

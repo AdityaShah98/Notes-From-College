@@ -12,13 +12,14 @@ import CardGrid from './CardGrid';
 import HeroUnit from './HeroUnit';
 import { useParams } from "react-router-dom";
 import { ReactComponent as Logo } from './img/NFClogo-cropped.svg';
+import * as ReactGA from 'react-ga';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit">
+        Notes From College
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -29,6 +30,11 @@ function Copyright() {
 const theme = createTheme();
 
 export default function Album() {
+  React.useEffect(() => {
+    ReactGA.initialize('UA-220289244-1');
+    ReactGA.pageview(window.location.pathname);
+  }, []);
+
   const [searchQuery, setSearchQuery] = React.useState("");
 
   return (

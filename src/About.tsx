@@ -12,6 +12,8 @@ import { TransitionProps } from '@mui/material/transitions';
 import aboutus from './img/about_us.jpg';
 import { useLocation } from "react-router-dom";
 
+import * as ReactGA from 'react-ga';
+
 type AboutModalProps = {
     open: boolean;
     closeModal: any;
@@ -73,6 +75,7 @@ function AboutButton() {
 
     const openModal = () => {
         window.history.pushState(null, "Notes from College - About", "/about");
+        ReactGA.pageview(window.location.pathname);
         setOpen(true);
     };
 
